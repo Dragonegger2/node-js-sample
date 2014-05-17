@@ -6,9 +6,10 @@ app.use(express.static(__dirname + '/public'))
 
 
 var connection = mysql.createPool({
-	host:'127.0.0.1',
+	host:'localhost',
 	user:'root',
 	password:'bitnami1',
+	database: "test"
 });
 
 app.get('/', function(request, response) {
