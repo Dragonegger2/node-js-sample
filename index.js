@@ -8,7 +8,7 @@ app.use(express.static(__dirname + '/public'))
 var connection = mysql.createPool({
 	host:'localhost',
 	user:'root',
-	password:'bitnami1',
+	password:'bitnami',
 	database: "test"
 });
 
@@ -18,7 +18,6 @@ app.get('/', function(request, response) {
 })
 
 app.get('/test', function(request, response) {
-
 	var sql = "SELECT * FROM visits";
 	connection.getConnection(function(err, connection) {
 		var result;
@@ -39,6 +38,27 @@ app.get('/test', function(request, response) {
 	}
 )});
 
+app.get('/visits', function(request, response) {
+	var results;
+	var sql = "SELECT * FROM visits";
+	connection.query(sql, function(err, rows, fields) {
+			if (err) {
+				response.statusCode = 500;
+				results = {
+					message: "error"
+				}	
+			} else {
+				if(rows.length == 0){
+					rows = { message: "No user found"};
+					res.send(rows);
+					return;
+				} else {
+					console.log(rows);
+
+					res.send(rows);
+				}
+
+});
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'))
 })
