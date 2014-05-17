@@ -1,15 +1,15 @@
-var express = require('express')
+var express = require('express');
 var app = express();
 
 app.set('port', (process.env.PORT || 5000))
 app.use(express.static(__dirname + '/public'))
 
 app.get('/', function(request, response) {
- 	response.send('Hello World!')
+ 	response.render('index.html');
 })
 
 app.get('/api/test', function(request, response) {
-	response.send("You passed!")
+	response.send("You passed!");
 })
 
 app.listen(app.get('port'), function() {
