@@ -50,12 +50,12 @@ app.get('/visits', function(request, response) {
 			} else {
 				if(rows.length == 0){
 					rows = { message: "No user found"};
-					res.send(rows);
+					response.send(rows);
 					return;
 				} else {
 					console.log(rows);
 
-					res.send(rows);
+					response.send(rows);
 				}}})});
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'))
