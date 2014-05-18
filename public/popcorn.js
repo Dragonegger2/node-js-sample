@@ -4,7 +4,35 @@
   
   $(document).ready(function() {
     initialize();
-  });
+        Parse.initialize("3ZZzYfo6sI6gsA12WlOM54E3xKIN3nKuna5gQ7b6", "OiuEdsflpfMoLv1GtsjsXkZIwaigT3LItTNa8ei2");
+        $("#data").text("parse connection initialized...");
+
+        var Visits = Parse.Object.extend("PopcornVisits");
+        var query = new Parse.Query(Visits);
+        query.find({
+          success: function(results) {
+            //alert(results[0].get("address"));
+            var arrayLength = results.length;
+            for(var i = 0; i < arrayLength; i++ ){
+              $("#data").append("<p>" + results[i].get("address") + "</p>");
+
+              var marker = new google.maps.Marker( {
+                position: myLatlng,
+                map: map,
+                title:results[i].get("address")
+              });
+
+              marker.setMap();
+            }
+            console.log(results);
+          },
+          error: function(error) {
+            alert("error");
+          }
+        });
+      });
+
+
 
   function dontVisit(position) {
       //showMap(position.coords.latitude, position.coords.longitude, true);

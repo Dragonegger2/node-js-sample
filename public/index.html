@@ -14,15 +14,6 @@
     <script src="//www.parsecdn.com/js/parse-1.2.18.min.js"></script>
     <script src="popcorn.js"></script>
     <script>
-      
-      //Parse.initialize("wKNTLJ1V1RYXTNU55kPNDiLu0yhtcERv5RaKiUi6", "Aunlsdp4h8NYIYv6KpNUyi7clfxO9LFywIaCNblA");
-      //var TestObject = Parse.Object.extend("TestObject");
-      //var testObject = new TestObject();
-      /*testObject.save({foo: "bar"}).then(function(object) {
-        alert("yay! it worked");
-      });
-
-      */
       $(document).ready(function() {
         Parse.initialize("3ZZzYfo6sI6gsA12WlOM54E3xKIN3nKuna5gQ7b6", "OiuEdsflpfMoLv1GtsjsXkZIwaigT3LItTNa8ei2");
         $("#data").text("parse connection initialized...");
@@ -34,9 +25,17 @@
             //alert(results[0].get("address"));
             var arrayLength = results.length;
             for(var i = 0; i < arrayLength; i++ ){
-              //alert(results[i].get("address"));
-              //$("#data").text($("#data").text() + "<br />" +results[i].get("address"));
-              $("#data").append("<p>" + results[i].get("address") + "</p>");
+              $("#data").append("<p>" + results[i].get("latitude") + "</p>");
+
+              var myLatlng = new google.maps.LatLng(results[i].get("latitude"), results[i].get("longitude"));
+
+              var marker = new google.maps.Marker( {
+                position: myLatlng,
+                map: map,
+                title:results[i].get("address")
+              });
+
+              marker.setMap();
             }
             console.log(results);
           },
