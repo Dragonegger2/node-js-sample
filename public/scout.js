@@ -50,11 +50,17 @@
       query.find({
         success: function(results) {
           parserData = results;
-          $("#data").append("<ul>");
+          $("#data").append("<table>");
+          $("#data table").append("<tr><th>Address:</th><th>Date Created:</th></tr>");
+          
           for(var i = 0; i < results.length; i++) {
-            $("#data ul").append("<li><div class='address' lat=" + results[i].get('latitude') +" lon='"+ results[i].get('longitude') +"'>" + results[i].get("address") + "</div</li><hr />");
+
+           $ ("#data table").append("<tr class='address' lat=" + results[i].get('latitude') +" lon='" + results[i].get('longitude') + "'><td>" + results[i].get("address") + "</div></td><td>" + results[i].updatedAt + "</td></tr>");
+            //var created = $("#data ul").append("<tr>");
+            //<td><li><div class='address' lat=" + results[i].get('latitude') +" lon='"+ results[i].get('longitude') +"'>" + results[i].get("address") + "</div</li><hr /></td><td>" + results[i].get("createdAt")) + "</td></tr>";
           } 
-          $("#data").append("</ul>");
+          $("#data").append("</table>");
+
           drawMap(true);
         },
         error: function(error) {
