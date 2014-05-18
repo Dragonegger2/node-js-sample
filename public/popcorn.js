@@ -115,7 +115,7 @@ function drawMap(bool){
           position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
           title: parserData[i].get('address'),
           map: map,
-          icon: 'markers/green_markerY.png'
+          icon: '/markers/green_markerY.png'
         }); 
     }
     else if (parserData[i].get('reaction') == false ) {
