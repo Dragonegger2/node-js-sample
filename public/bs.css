@@ -24,5 +24,4 @@ html, body, #map-canvas {
 #data ul li:hover {
   background-color:blue;
   color:white;
-  background-image:url("./markers/purple_markerU.png");
-  }
+}
