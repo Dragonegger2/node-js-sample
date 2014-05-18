@@ -136,13 +136,13 @@ function drawMap(bool){
     }
 
     bindInfoWindow(markers[i],map,infowins[i]);
-    console.log(i + " lon: " + parserData[i].get('longitude') + ' lat: ' + parserData[i].get('latitude'));
+    //console.log(i + " lon: " + parserData[i].get('longitude') + ' lat: ' + parserData[i].get('latitude'));
   }
   if(showClustering) {
     mc = new MarkerClusterer(map, markers);
     mc.setGridSize(20);
   }
-  
+  /*
   //Try HTML5 geolocation, if successful store coordinates in pos variable
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -158,7 +158,7 @@ function drawMap(bool){
     }); 
     
     });
-  }
+  }*/
 };
 
 function closeInfoWindow() {
