@@ -12,6 +12,9 @@ var connection = mysql.createPool({
 	database: "test"
 });
 
+var PARSE_APPLICATION_ID="hPiQpsKupuMuWRRY0xtnfoY0n3lJnAOoo0QoqiB";
+var REST_API_KEY="hPiQpsKupuMuWRRY0xtnfoY0n3lJnAOoo0QoqiBr";
+
 app.get('/', function(request, response) {
 
  	response.render('index.html');
