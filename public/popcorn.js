@@ -3,8 +3,16 @@
 // is probably because you have denied permission for location sharing.
   
   $(document).ready(function() {
-    //initialize();
-       
+       $(".cluster").click(function() {
+          var $this = $(this);
+          if($this.is(':checked')) {
+            console.log("checked");
+          }
+          else {
+            console.log("unchecked");
+          }
+          toggleClustering();
+       });
       });
 
   var pos; 
@@ -15,6 +23,9 @@
   var map = [];
   var mapOptions = {};
   var mc;
+  var showClustering = true;
+  var parserData = [];
+
   function initialize() {
      Parse.initialize("3ZZzYfo6sI6gsA12WlOM54E3xKIN3nKuna5gQ7b6", "OiuEdsflpfMoLv1GtsjsXkZIwaigT3LItTNa8ei2");
       //$("#data").text("parse connection initialized...");
@@ -23,6 +34,7 @@
       var query = new Parse.Query(Visits);
       query.find({
         success: function(results) {
+          parserData = results;
           $("#data").append("<ul>");
           for(var i = 0; i < results.length; i++) {
             $("#data ul").append("<li>" + results[i].get("address") + "</li><hr />");
@@ -36,7 +48,15 @@
       });
   }
 
-
+function toggleClustering() {
+  if(showClustering) {
+    showClustering = false;
+  }
+  else {
+    showClustering = true;
+  }
+  drawMap(parserData);
+}
 function drawMap(parserData){
   
   
@@ -48,8 +68,8 @@ function drawMap(parserData){
   
   //Set initial map options (start position centered above US)
   mapOptions = {
-          zoom: 4,
-          center: new google.maps.LatLng(38.37721235785647, -98.10000000000002),
+          zoom: 6,
+          center: new google.maps.LatLng(parserData[parserData.length-1].get("latitude"), parserData[parserData.length-1].get("longitude")),
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           maxZoom: 15
   }
@@ -73,9 +93,11 @@ function drawMap(parserData){
     bindInfoWindow(markers[i],map,infowins[i]);
     console.log(i + " lon: " + parserData[i].get('longitude') + ' lat: ' + parserData[i].get('latitude'));
   }
-  mc = new MarkerClusterer(map, markers);
-  mc.setGridSize(20);
- 
+  if(showClustering) {
+    mc = new MarkerClusterer(map, markers);
+    mc.setGridSize(20);
+  }
+  
   //Try HTML5 geolocation, if successful store coordinates in pos variable
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
