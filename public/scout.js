@@ -1,7 +1,3 @@
-// Note: This example requires that you consent to location sharing when
-// prompted by your browser. If you see a blank space instead of the map, this
-// is probably because you have denied permission for location sharing.
-  
   $(document).ready(function() {
        $(".cluster").click(function() {
           var $this = $(this);
@@ -76,16 +72,14 @@ function toggleClustering() {
   }
   drawMap(parserData);
 }
-function drawMap(bool){
-  
-  
+function drawMap(bool){  
   latlngbounds = new google.maps.LatLngBounds(); /*AUTOZOOM*/
   
   //Initialize arrays to hold markers and info windows
   markers = [parserData.length];            
   infowins = [parserData.length]; 
   
-  //Set initial map options (start position centered above US)
+  //true means that this object isn't set somewhere else. Hacky. Love that it works though.
   if(bool == true) {
       mapOptions = {
           zoom: 6,
@@ -122,23 +116,6 @@ function drawMap(bool){
     mc = new MarkerClusterer(map, markers);
     mc.setGridSize(20);
   }
-  /*
-  //Try HTML5 geolocation, if successful store coordinates in pos variable
-  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-    pos = new google.maps.LatLng(position.coords.latitude,
-                                       position.coords.longitude);
-    
-    var geo = new google.maps.Geocoder();
-    geo.geocode({'latLng': pos}, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK){
-    posadd = results[1].formatted_address;
-    }
-    
-    }); 
-    
-    });
-  }*/
 };
 
 function closeInfoWindow() {
@@ -155,11 +132,6 @@ function bindInfoWindow(marker, map, infowindow){
     }
     infowindow.open(map,marker);
   });
-  
-
 }
-  //Listens for a click on map and calls closeInfoWindow function
-  google.maps.event.addListener(map, 'click', closeInfoWindow); 
-
-  
+google.maps.event.addListener(map, 'click', closeInfoWindow);   
 window.addEventListener( "load", initialize, false );
