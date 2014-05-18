@@ -3,104 +3,100 @@
 // is probably because you have denied permission for location sharing.
   
   $(document).ready(function() {
-    initialize();
-        Parse.initialize("3ZZzYfo6sI6gsA12WlOM54E3xKIN3nKuna5gQ7b6", "OiuEdsflpfMoLv1GtsjsXkZIwaigT3LItTNa8ei2");
-        $("#data").text("parse connection initialized...");
-
-        var Visits = Parse.Object.extend("PopcornVisits");
-        var query = new Parse.Query(Visits);
-        query.find({
-          success: function(results) {
-            //alert(results[0].get("address"));
-            var arrayLength = results.length;
-            for(var i = 0; i < arrayLength; i++ ){
-              $("#data").append("<p>" + results[i].get("address") + "</p>");
-
-              var marker = new google.maps.Marker( {
-                position: myLatlng,
-                map: map,
-                title:results[i].get("address")
-              });
-
-              marker.setMap();
-            }
-            console.log(results);
-          },
-          error: function(error) {
-            alert("error");
-          }
-        });
+    //initialize();
+       
       });
 
-
-
-  function dontVisit(position) {
-      //showMap(position.coords.latitude, position.coords.longitude, true);
-      console.log("Don't visit: " );
-      console.log("Latitude: " + position.coords.latitude);
-      console.log("Longitude: " + position.coords.longitude);
-    }
-
-  function visitAgain(position) {
-      console.log("Visit Again: " );
-      console.log("Latitude: " + position.coords.latitude);
-      console.log("Longitude: " + position.coords.longitude);
-    }
-  var map;
-  var myLatlng = new google.maps.LatLng(-25.363882,131.044922);
-
+  var pos; 
+  var posadd;
+  var latlngbounds;
+  var markers = [];
+  var infowins = [];
+  var map = [];
+  var mapOptions = {};
+  var mc;
   function initialize() {
+     Parse.initialize("3ZZzYfo6sI6gsA12WlOM54E3xKIN3nKuna5gQ7b6", "OiuEdsflpfMoLv1GtsjsXkZIwaigT3LItTNa8ei2");
+      //$("#data").text("parse connection initialized...");
 
-    var marker = new google.maps.Marker({
-        position: myLatlng,
-        title:"Hello World!"
-    });
-    marker.setMap(map);
-
-    var mapOptions = {
-      zoom: 17
-    };
-    map = new google.maps.Map(document.getElementById('map-canvas'),
-        mapOptions);
-
-
-    // Try HTML5 geolocation
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        var pos = new google.maps.LatLng(position.coords.latitude,
-                                         position.coords.longitude);
-
-        var infowindow = new google.maps.InfoWindow({
-          map: map,
-          position: pos,
-          content: 'Location found using HTML5.'
-        });
-
-        map.setCenter(pos);
-      }, function() {
-        handleNoGeolocation(true);
+      var Visits = Parse.Object.extend("PopcornVisits");
+      var query = new Parse.Query(Visits);
+      query.find({
+        success: function(results) {
+          drawMap(results);
+        },
+        error: function(error) {
+          alert("error");
+        }
       });
-    } else {
-      // Browser doesn't support Geolocation
-      handleNoGeolocation(false);
-    }
   }
 
-  function handleNoGeolocation(errorFlag) {
-    if (errorFlag) {
-      var content = 'Error: The Geolocation service failed.';
-    } else {
-      var content = 'Error: Your browser doesn\'t support geolocation.';
-    }
 
-    var options = {
-      map: map,
-      position: new google.maps.LatLng(60, 105),
-      content: content
-    };
-
-    var infowindow = new google.maps.InfoWindow(options);
-    map.setCenter(options.position);
+function drawMap(parserData){
+  
+  
+  latlngbounds = new google.maps.LatLngBounds(); /*AUTOZOOM*/
+  
+  //Initialize arrays to hold markers and info windows
+  markers = [parserData.length];            
+  infowins = [parserData.length]; 
+  
+  //Set initial map options (start position centered above US)
+  mapOptions = {
+          zoom: 4,
+          center: new google.maps.LatLng(38.37721235785647, -98.10000000000002),
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          maxZoom: 15
   }
+  
+  //Create map object in the space provided in HTML using set map options
+  map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+  
 
-  google.maps.event.addDomListener(window, 'load', initialize);
+  //Create markers and info windows for each coop in list and store them in previously defined arrays
+  for (var i=0;i<parserData.length;i++) {
+    infowins[i] = new google.maps.InfoWindow({
+        //content: '<div>' + parserData[i][7] + '<br>' + parserData[i][1] + ' <br> ' + parserData[i][2] + ', ' + parserData[i][3] + '<br>' + parserData[i][4] + '<br> Major: ' + parserData[i][5] + '<br> </div> <button class="button" id="selectStart" onclick="openDirectionTab(\''+ parserData[i][1] + " " + parserData[i][2] + ", " + parserData[i][3] + '\')">Get Directions</button>',       
+        position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
+        maxWidth: 650
+    }); 
+    
+    markers[i] = new google.maps.Marker({
+        position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
+        map: map    
+    }); 
+    bindInfoWindow(markers[i],map,infowins[i]);
+  }
+  
+  mc = new MarkerClusterer(map, markers);
+  mc.setGridSize(20);
+ 
+  //Try HTML5 geolocation, if successful store coordinates in pos variable
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+    pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+    
+    var geo = new google.maps.Geocoder();
+    geo.geocode({'latLng': pos}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK){
+    posadd = results[1].formatted_address;
+    }
+    
+    }); 
+    
+    });
+  }
+};
+
+function closeInfoWindow() {
+  for (var i=0; i <infowins.length; i++){
+    infowins[i].close();
+  }
+  
+}
+  //Listens for a click on map and calls closeInfoWindow function
+  google.maps.event.addListener(map, 'click', closeInfoWindow); 
+
+  
+window.addEventListener( "load", initialize, false );
