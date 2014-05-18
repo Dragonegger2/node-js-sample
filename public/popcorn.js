@@ -54,12 +54,27 @@
       query.find({
         success: function(results) {
           parserData = results;
+          var noCount = 0;
+          var yesCount = 0;
           $("#data").append("<ul>");
           for(var i = 0; i < results.length; i++) {
-            $("#data ul").append("<li><div class='address' lat=" + results[i].get('latitude') +" lon='"+ results[i].get('longitude') +"'>" + results[i].get("address") + "</div</li><hr />");
+            var reactionClass;
+
+            if(results[i].get("reaction")== true) {
+              reactionClass = "yes";
+              yesCount = yesCount + 1;
+            }
+            else if(results[i].get("reaction") == false) {
+              reactionClass = "no";
+              noCount++;
+            }
+
+            $("#data ul").append("<li class='address " + reactionClass + "' lat=" + results[i].get('latitude') +" lon='"+ results[i].get('longitude') +"'>" + results[i].get("address") + "</li>");
           } 
           $("#data").append("</ul>");
           drawMap(true);
+
+          $("#analytics").append("<table><tr><th>Yes:</th><td>" + yesCount + "</td></tr>" + "<tr><th>No: </th><td>" + noCount + "</td></tr>" + "<tr><th>Average:</th><td>" + yesCount / (yesCount + noCount)+ "</td></tr></table>");
         },
         error: function(error) {
           alert("error");

@@ -62,6 +62,8 @@
           $("#data").append("</table>");
 
           drawMap(true);
+
+          
         },
         error: function(error) {
           alert("error");

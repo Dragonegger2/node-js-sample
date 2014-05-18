@@ -10,13 +10,19 @@
     <script type="text/javascript" src="scout.js"></script>
     <script type="text/javascript" src="markerclusterer.js" ></script>
     <script>
-
-      
+      $(function() {
+          // setup ul.tabs to work as tabs for each div directly under div.panes
+          $("ul.tabs").tabs("div.panes > div");
+      });
     </script>
   </head>
   <body>
     <div id="map-canvas"></div>
-    <div id="data"><div id="header" style="text-align:'center'">Scout for Food Visited Locations</div></div>
-    <div><input class='cluster' type="checkbox" name="cluster">Display Clustering</div>
+      <div id="data">
+        <span id="header" style="text-align:'center'; width:50">Scout for Food Visited Locations</span>
+      </div>
+      <div id="options"><div><input class='cluster' type="checkbox" name="cluster">Display Clustering</div>
+    </div>
+    
   </body>
 </html>

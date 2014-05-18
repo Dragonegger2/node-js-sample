@@ -5,14 +5,13 @@ html, body, #map-canvas {
 }
 
 #map-canvas {
-  width:70%;
+  width:60%;
   height:99%;
   float:left;
 }
 #data {
   float: right;
-  border: black solid 1px;
-  width: 29%;
+  width: 39%;
   height: 99%;
   overflow: hidden;
 }
@@ -24,4 +23,22 @@ html, body, #map-canvas {
 #data ul li:hover {
   background-color:blue;
   color:white;
+}
+
+.yes {
+  background-color:green;
+}
+.no {
+  background-color:red;
+}
+.address {
+  padding-left:10px;
+  margin:0px;
+  text-align:left;
+}
+#analytics {
+  float:right;
+}
+table {
+  border: 1px black solid;
 }
