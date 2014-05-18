@@ -12,7 +12,6 @@ html, body, #map-canvas {
 #data {
   float: right;
   width: 39%;
-  height: 99%;
   overflow: hidden;
 }
 #data ul li {
@@ -38,7 +37,9 @@ html, body, #map-canvas {
 }
 #analytics {
   float:right;
+  width:39%;
 }
 table {
   border: 1px black solid;
+
 }
