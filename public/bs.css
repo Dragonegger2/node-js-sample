@@ -14,4 +14,8 @@ html, body, #map-canvas {
   border: black solid 1px;
   width: 24%;
   height: 99%;
+  overflow: hidden;
 }
+#data ul li {
+  list-style-type: none;
+}   

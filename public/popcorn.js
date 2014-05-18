@@ -14,7 +14,7 @@
   var infowins = [];
   var map = [];
   var mapOptions = {};
-  //var mc;
+  var mc;
   function initialize() {
      Parse.initialize("3ZZzYfo6sI6gsA12WlOM54E3xKIN3nKuna5gQ7b6", "OiuEdsflpfMoLv1GtsjsXkZIwaigT3LItTNa8ei2");
       //$("#data").text("parse connection initialized...");
@@ -25,7 +25,7 @@
         success: function(results) {
           $("#data").append("<ul>");
           for(var i = 0; i < results.length; i++) {
-            $("#data").append("<li>" + results[i].get("address") + "</li>");
+            $("#data ul").append("<li>" + results[i].get("address") + "</li><hr />");
           } 
           $("#data").append("</ul>");
           drawMap(results);
@@ -65,7 +65,6 @@ function drawMap(parserData){
         position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
         maxWidth: 650
     }); 
-    console.log(i + "lon: " + parserData[i].get('longitude') + ' lat: ' + parserData[i].get('latitude'));
     markers[i] = new google.maps.Marker({
         position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
         title: parserData[i].get('address'),
@@ -74,9 +73,8 @@ function drawMap(parserData){
     bindInfoWindow(markers[i],map,infowins[i]);
     console.log(i + " lon: " + parserData[i].get('longitude') + ' lat: ' + parserData[i].get('latitude'));
   }
-  console.log("outta here");
-  //mc = new MarkerClusterer(map, markers);
-  //mc.setGridSize(20);
+  mc = new MarkerClusterer(map, markers);
+  mc.setGridSize(20);
  
   //Try HTML5 geolocation, if successful store coordinates in pos variable
   if(navigator.geolocation) {
