@@ -13,7 +13,23 @@
           }
           toggleClustering();
        });
-      });
+  });
+
+  $(document).on('click',".address", function(e) {
+    var $this = $(this);
+    console.log("Longitude: " + $this.attr("lon") + " Latitude: " + $this.attr("lat"));
+    changeCenter($this.attr("lon"), $this.attr("lat"));
+    e.preventDefault();
+  }); 
+  function changeCenter(lon, lat) {
+      mapOptions = {
+          zoom: 15,
+          center: new google.maps.LatLng(lat, lon),
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          maxZoom: 15
+    }
+    drawMap(false);
+  }
 
   var pos; 
   var posadd;
@@ -23,10 +39,13 @@
   var map = [];
   var mapOptions = {};
   var mc;
-  var showClustering = true;
+  var showClustering = false;
   var parserData = [];
 
   function initialize() {
+    if(showClustering){ 
+      $(".cluster").prop('checked', showClustering);
+    }
      Parse.initialize("3ZZzYfo6sI6gsA12WlOM54E3xKIN3nKuna5gQ7b6", "OiuEdsflpfMoLv1GtsjsXkZIwaigT3LItTNa8ei2");
       //$("#data").text("parse connection initialized...");
 
@@ -37,15 +56,17 @@
           parserData = results;
           $("#data").append("<ul>");
           for(var i = 0; i < results.length; i++) {
-            $("#data ul").append("<li>" + results[i].get("address") + "</li><hr />");
+            $("#data ul").append("<li><div class='address' lat=" + results[i].get('latitude') +" lon='"+ results[i].get('longitude') +"'>" + results[i].get("address") + "</div</li><hr />");
           } 
           $("#data").append("</ul>");
-          drawMap(results);
+          drawMap(true);
         },
         error: function(error) {
           alert("error");
         }
       });
+
+
   }
 
 function toggleClustering() {
@@ -57,7 +78,7 @@ function toggleClustering() {
   }
   drawMap(parserData);
 }
-function drawMap(parserData){
+function drawMap(bool){
   
   
   latlngbounds = new google.maps.LatLngBounds(); /*AUTOZOOM*/
@@ -67,12 +88,15 @@ function drawMap(parserData){
   infowins = [parserData.length]; 
   
   //Set initial map options (start position centered above US)
-  mapOptions = {
+  if(bool == true) {
+      mapOptions = {
           zoom: 6,
           center: new google.maps.LatLng(parserData[parserData.length-1].get("latitude"), parserData[parserData.length-1].get("longitude")),
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           maxZoom: 15
+    }
   }
+
   
   //Create map object in the space provided in HTML using set map options
   map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
@@ -85,11 +109,32 @@ function drawMap(parserData){
         position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
         maxWidth: 650
     }); 
-    markers[i] = new google.maps.Marker({
-        position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
-        title: parserData[i].get('address'),
-        map: map    
-    }); 
+    //By Reaction:
+    if(parserData[i].get('reaction') == true ) {
+        markers[i] = new google.maps.Marker({
+          position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
+          title: parserData[i].get('address'),
+          map: map,
+          icon: 'markers/green_markerA.png'
+        }); 
+    }
+    else if (parserData[i].get('reaction') == false ) {
+        markers[i] = new google.maps.Marker({
+          position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
+          title: parserData[i].get('address'),
+          map: map,
+          icon: 'markers/red_markerA.png'
+        });
+    }
+    else {
+          markers[i] = new google.maps.Marker({
+          position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
+          title: parserData[i].get('address'),
+          map: map,
+          icon: 'markers/purple_markerA.png'
+        });
+    }
+
     bindInfoWindow(markers[i],map,infowins[i]);
     console.log(i + " lon: " + parserData[i].get('longitude') + ' lat: ' + parserData[i].get('latitude'));
   }

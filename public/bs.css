@@ -5,17 +5,23 @@ html, body, #map-canvas {
 }
 
 #map-canvas {
-  width:75%;
+  width:70%;
   height:99%;
   float:left;
 }
 #data {
   float: right;
   border: black solid 1px;
-  width: 24%;
+  width: 29%;
   height: 99%;
   overflow: hidden;
 }
 #data ul li {
   list-style-type: none;
-}   
+  height:30px;
+  margin-top:5px;
+} 
+#data ul li:hover {
+  background-color:blue;
+  color:white;
+  }
