@@ -14,7 +14,7 @@
   var infowins = [];
   var map = [];
   var mapOptions = {};
-  var mc;
+  //var mc;
   function initialize() {
      Parse.initialize("3ZZzYfo6sI6gsA12WlOM54E3xKIN3nKuna5gQ7b6", "OiuEdsflpfMoLv1GtsjsXkZIwaigT3LItTNa8ei2");
       //$("#data").text("parse connection initialized...");
@@ -23,6 +23,11 @@
       var query = new Parse.Query(Visits);
       query.find({
         success: function(results) {
+          $("#data").append("<ul>");
+          for(var i = 0; i < results.length; i++) {
+            $("#data").append("<li>" + results[i].get("address") + "</li>");
+          } 
+          $("#data").append("</ul>");
           drawMap(results);
         },
         error: function(error) {
@@ -56,20 +61,22 @@ function drawMap(parserData){
   //Create markers and info windows for each coop in list and store them in previously defined arrays
   for (var i=0;i<parserData.length;i++) {
     infowins[i] = new google.maps.InfoWindow({
-        //content: '<div>' + parserData[i][7] + '<br>' + parserData[i][1] + ' <br> ' + parserData[i][2] + ', ' + parserData[i][3] + '<br>' + parserData[i][4] + '<br> Major: ' + parserData[i][5] + '<br> </div> <button class="button" id="selectStart" onclick="openDirectionTab(\''+ parserData[i][1] + " " + parserData[i][2] + ", " + parserData[i][3] + '\')">Get Directions</button>',       
+        content: '<div>' + parserData[i].get("address") + '<br> </div>',       
         position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
         maxWidth: 650
     }); 
-    
+    console.log(i + "lon: " + parserData[i].get('longitude') + ' lat: ' + parserData[i].get('latitude'));
     markers[i] = new google.maps.Marker({
         position: new google.maps.LatLng(parserData[i].get("latitude"), parserData[i].get("longitude")),
+        title: parserData[i].get('address'),
         map: map    
     }); 
     bindInfoWindow(markers[i],map,infowins[i]);
+    console.log(i + " lon: " + parserData[i].get('longitude') + ' lat: ' + parserData[i].get('latitude'));
   }
-  
-  mc = new MarkerClusterer(map, markers);
-  mc.setGridSize(20);
+  console.log("outta here");
+  //mc = new MarkerClusterer(map, markers);
+  //mc.setGridSize(20);
  
   //Try HTML5 geolocation, if successful store coordinates in pos variable
   if(navigator.geolocation) {
@@ -94,6 +101,17 @@ function closeInfoWindow() {
     infowins[i].close();
   }
   
+}
+
+function bindInfoWindow(marker, map, infowindow){
+  google.maps.event.addListener(marker, 'click', function() {
+    for(var i=0; i < parserData.length; i++){
+    infowins[i].close();    
+    }
+    infowindow.open(map,marker);
+  });
+  
+
 }
   //Listens for a click on map and calls closeInfoWindow function
   google.maps.event.addListener(map, 'click', closeInfoWindow); 
