@@ -20,6 +20,10 @@ app.get('/', function(request, response) {
  	response.render('index.html');
 })
 
+app.get('/scout.html', function(request, response) {
+	response.render('/scout.html');
+});
+
 app.get('/test', function(request, response) {
 	var sql = "SELECT * FROM visits";
 	connection.getConnection(function(err, connection) {
