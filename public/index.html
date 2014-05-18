@@ -34,8 +34,9 @@
             //alert(results[0].get("address"));
             var arrayLength = results.length;
             for(var i = 0; i < arrayLength; i++ ){
-              alert(results[i].get("address"));
-              $("#data").text($("#data").text() + "<br />" +results[i].get("address"));
+              //alert(results[i].get("address"));
+              //$("#data").text($("#data").text() + "<br />" +results[i].get("address"));
+              $("#data").append("<p>" + results[i].get("address") + "</p>");
             }
             console.log(results);
           },
